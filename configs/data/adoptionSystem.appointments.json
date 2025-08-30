@@ -1,0 +1,44 @@
+[{
+  "_id": {
+    "$oid": "67ad6ac54e52d7cc69f014e3"
+  },
+  "date": "14/05/2025",
+  "hour": "09:30:00 am",
+  "description": "Dolor de cabeza",
+  "location": "Guatemala",
+  "pet": {
+    "$oid": "67ad7040eddf2d69338283cd"
+  },
+  "keeper": {
+    "$oid": "67ad6fe5eddf2d69338283c8"
+  },
+  "status": true,
+  "createdAt": {
+    "$date": "2025-02-13T03:45:09.859Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-13T04:09:09.446Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ad7089eddf2d69338283db"
+  },
+  "date": "12/02/2025",
+  "hour": "14:00:00 pm",
+  "description": "Dolor de estomago",
+  "location": "Amatitlan",
+  "pet": {
+    "$oid": "67ad6a644e52d7cc69f014de"
+  },
+  "keeper": {
+    "$oid": "67ad66a24e52d7cc69f014d2"
+  },
+  "status": false,
+  "createdAt": {
+    "$date": "2025-02-13T04:09:45.944Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-13T04:15:27.703Z"
+  }
+}]

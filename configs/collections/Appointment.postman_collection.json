@@ -1,0 +1,132 @@
+{
+	"info": {
+		"_postman_id": "fa2466b4-e6e9-49e3-995a-092835282a0e",
+		"name": "Appointment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37413959"
+	},
+	"item": [
+		{
+			"name": "AgregarAppointment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2N2FkNjZhMjRlNTJkN2NjNjlmMDE0ZDIiLCJpYXQiOjE3Mzk0MTgxNDYsImV4cCI6MTczOTQyMTc0Nn0.o7xb9qdsSCFV3M9KDagNOOZCbR-Eniej5ZyQKWhXz1g",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": \"12/02/2025\",\r\n    \"hour\": \"14:00:00 pm\",\r\n    \"description\": \"Dolor de estomago\",\r\n    \"location\": \"Amatitlan\",\r\n    \"name\": \"pedro\",\r\n    \"email\": \"henryp@gmail.com\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/adoptionSystem/v1/appointments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"adoptionSystem",
+						"v1",
+						"appointments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ListarAppointment",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/adoptionSystem/v1/appointments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"adoptionSystem",
+						"v1",
+						"appointments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateAppointment",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2N2FkNmZlNWVkZGYyZDY5MzM4MjgzYzgiLCJpYXQiOjE3Mzk0MTk2MzcsImV4cCI6MTczOTQyMzIzN30.a0uHYK4ake1lWtRq_teXKbAXfMW_utDTsJ-tP2PLUHg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date\": \"14/05/2025\",\r\n    \"hour\": \"09:30:00 am\",\r\n    \"description\": \"Dolor de cabeza\",\r\n    \"location\": \"Guatemala\",\r\n    \"name\": \"usman\",\r\n    \"email\": \"dmijanfos@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/adoptionSystem/v1/appointments/67ad6ac54e52d7cc69f014e3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"adoptionSystem",
+						"v1",
+						"appointments",
+						"67ad6ac54e52d7cc69f014e3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteAppointment",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2N2FkNjZhMjRlNTJkN2NjNjlmMDE0ZDIiLCJpYXQiOjE3Mzk0MjAwODQsImV4cCI6MTczOTQyMzY4NH0.iBZD0P7k-tAjbGmYJNfeoWx_grl2oWCeM8xk7yfdEB8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/adoptionSystem/v1/appointments/67ad7089eddf2d69338283db",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"adoptionSystem",
+						"v1",
+						"appointments",
+						"67ad7089eddf2d69338283db"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
