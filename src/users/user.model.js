@@ -15,6 +15,8 @@ const UserSchema = Schema({
     },
     DPI: {
         type: String,
+        minLength: 13,
+        maxLength: 13,
         required: [true, "Campo vacío"],
     },
     comunidad: {
