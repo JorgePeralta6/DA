@@ -46,10 +46,9 @@ router.put(
 
 
 router.delete(
-    "/:id",
+    "/:numero",
     [
-        check("id", "No es un ID valido").isMongoId(),
-        check("id").custom(existeUsuarioById),
+        check("numero", "El número es obligatorio").not().isEmpty(),
         validarCampos
     ],
     deleteUser

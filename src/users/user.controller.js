@@ -121,28 +121,54 @@ export const updateUser = async (req, res = response) => {
 }
 
 
-
 export const deleteUser = async (req, res) => {
     try {
-        
-        const { id } = req.params;
+        const { numero } = req.params;
 
-        const user = await User.findByIdAndUpdate(id, { status: false}, { new: true});
+        // Verificar si existe el usuario
+        const user = await User.findOneAndUpdate(
+            { numero },
+            { status: false },
+            { new: true }
+        );
 
-        const autheticatedUser = req.user;
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                msg: 'Usuario no encontrado'
+            });
+        }
+
+        // Convertimos numero a entero para la comparación en reordenamiento
+        const numeroEliminado = parseInt(numero, 10);
+
+        // Reordenar: disminuir en 1 todos los números mayores al eliminado
+        // NOTA: Convertimos "numero" a entero para hacer la comparación correctamente
+        const usuariosActivos = await User.find({ status: true });
+
+        for (const u of usuariosActivos) {
+            const n = parseInt(u.numero, 10);
+            if (n > numeroEliminado) {
+                u.numero = (n - 1).toString(); // lo dejamos como string
+                await u.save();
+            }
+        }
+
+        const authenticatedUser = req.user;
 
         res.status(200).json({
             success: true,
-            msg: 'Usuario desactivado',
+            msg: 'Usuario desactivado y reordenado correctamente',
             user,
-            autheticatedUser
+            authenticatedUser
         });
 
     } catch (error) {
         res.status(500).json({
             success: false,
             msg: 'Error al desactivar usuario',
-            error
-        })
+            error: error.message
+        });
     }
-}
+};
+
