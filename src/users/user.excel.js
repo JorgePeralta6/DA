@@ -83,7 +83,7 @@ export const generarExcel = async (req, res) => {
         });
 
         // Ajustar ancho de columnas
-        const widths = [3, 20, 20, 8, 18, 26, 18, 6, 7];
+        const widths = [3, 20, 20, 10, 18, 26, 18, 6, 7];
         widths.forEach((w, i) => ws.column(i + 1).setWidth(w));
 
         // === Cuerpo de la tabla ===
