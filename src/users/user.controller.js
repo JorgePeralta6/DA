@@ -31,19 +31,12 @@ export const saveUser = async (req,res) =>{
 export const getUsers = async (req = request, res = response) => {
     try {
 
-        const { limite = 10, desde = 0} = req.query;
         const query = { status: true};
 
-        const [total, users] = await Promise.all([
-            User.countDocuments(query),
-            User.find(query)
-                .skip(Number(desde))
-                .limit(Number(limite))
-        ])
+        const  users = await User.find(query)
 
         res.status(200).json({
             success: true,
-            total,
             users
         })
 
@@ -125,12 +118,8 @@ export const deleteUser = async (req, res) => {
     try {
         const { numero } = req.params;
 
-        // Verificar si existe el usuario
-        const user = await User.findOneAndUpdate(
-            { numero },
-            { status: false },
-            { new: true }
-        );
+        // Eliminar completamente el usuario
+        const user = await User.findOneAndDelete({ numero });
 
         if (!user) {
             return res.status(404).json({
@@ -143,10 +132,9 @@ export const deleteUser = async (req, res) => {
         const numeroEliminado = parseInt(numero, 10);
 
         // Reordenar: disminuir en 1 todos los números mayores al eliminado
-        // NOTA: Convertimos "numero" a entero para hacer la comparación correctamente
-        const usuariosActivos = await User.find({ status: true });
+        const usuariosRestantes = await User.find({});
 
-        for (const u of usuariosActivos) {
+        for (const u of usuariosRestantes) {
             const n = parseInt(u.numero, 10);
             if (n > numeroEliminado) {
                 u.numero = (n - 1).toString(); // lo dejamos como string
@@ -158,7 +146,7 @@ export const deleteUser = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            msg: 'Usuario desactivado y reordenado correctamente',
+            msg: 'Usuario eliminado y reordenado correctamente',
             user,
             authenticatedUser
         });
@@ -166,9 +154,8 @@ export const deleteUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            msg: 'Error al desactivar usuario',
+            msg: 'Error al eliminar usuario',
             error: error.message
         });
     }
 };
-

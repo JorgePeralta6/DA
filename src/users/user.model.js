@@ -14,7 +14,7 @@ const UserSchema = Schema({
         required: [true, "Campo vacío"],
     },
     DPI: {
-        type: String,
+        type: Number,
         minLength: 13,
         maxLength: 13,
         required: [true, "Campo vacío"],
