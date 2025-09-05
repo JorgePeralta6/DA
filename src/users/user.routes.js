@@ -27,14 +27,9 @@ router.post(
 router.get("/", getUsers);
 
 router.get(
-    "/findUser/:DPI",
-    [
-        check("DPI", "El DPI debe ser una cadena de 13 caracteres").isString().isLength({ min: 13, max: 13 }),
-        check("DPI").custom(existeDPI), 
-        validarCampos
-    ],
+    '/buscar/:search', 
     getDPI
-)
+);
 
 router.put(
     "/:numero",

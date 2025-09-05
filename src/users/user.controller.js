@@ -51,31 +51,37 @@ export const getUsers = async (req = request, res = response) => {
 
 export const getDPI = async (req, res) => {
     try {
- 
-        const { DPI } = req.params;
- 
-        const users = await User.find({DPI});
- 
-        if(!users){
+        const { search } = req.params;
+
+        const users = await User.find({
+            $or: [
+                { DPI: search },
+                { nombreE: { $regex: search, $options: 'i' } }, // búsqueda insensible a mayúsculas
+                { nombreN: { $regex: search, $options: 'i' } }
+            ]
+        });
+
+        if (!users || users.length === 0) {
             return res.status(404).json({
                 success: false,
-                msg: 'Usuario not found'
-            })
+                msg: 'Usuario no encontrado'
+            });
         }
- 
+
         res.status(200).json({
             success: true,
             users
-        })
- 
+        });
+
     } catch (error) {
         res.status(500).json({
             success: false,
             msg: 'Error al obtener usuarios',
             error
-        })
+        });
     }
 }
+
 
 export const updateUser = async (req, res = response) => {
     try {
