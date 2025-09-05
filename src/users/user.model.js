@@ -28,7 +28,7 @@ const UserSchema = Schema({
         required: [true, "Campo vacío"],
     },
     email: {
-        type: String, 
+        type: String,
     },
     telefono: {
         type: Number,
@@ -47,11 +47,11 @@ const UserSchema = Schema({
     },
     status: {
         type: Boolean,
-        default: true, 
+        default: true,
     },
 }, {
     timestamps: true,
-    versionKey: false 
+    versionKey: false
 });
 
 UserSchema.pre('save', async function (next) {
@@ -64,7 +64,7 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.methods.toJSON = function () {
     const { __v, _id, ...user } = this.toObject();
-    user.uid = _id; 
+    user.uid = _id;
     return user;
 }
 

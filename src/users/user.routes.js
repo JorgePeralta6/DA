@@ -27,7 +27,7 @@ router.post(
 router.get("/", getUsers);
 
 router.get(
-    '/buscar/:search', 
+    '/buscar/:search',
     getDPI
 );
 
@@ -51,7 +51,7 @@ router.delete(
 )
 
 router.get(
-    "/excel", 
+    "/excel",
     generarExcel
 )
 

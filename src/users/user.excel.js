@@ -19,61 +19,61 @@ export const generarExcel = async (req, res) => {
         // === Estilos ===
 
         // Estilo para encabezado (Ciruela claro)
-// Estilo para encabezado (Ciruela claro)
-    const headerStyle = wb.createStyle({
-        fill: {
-            type: 'pattern',
-            patternType: 'solid',
-            fgColor: '#D9D2E9' // Ciruela claro
-        },
-        font: {
-            name: 'Calibri',
-            size: 7,
-            bold: true,
-            color: '#000000'
-        },
-        alignment: {
-            horizontal: 'center'
-        },
-        border: {
-            left: { style: 'thin', color: '#000000' },
-            right: { style: 'thin', color: '#000000' },
-            top: { style: 'thin', color: '#000000' },
-            bottom: { style: 'thin', color: '#000000' }
-        }
-    });
+        // Estilo para encabezado (Ciruela claro)
+        const headerStyle = wb.createStyle({
+            fill: {
+                type: 'pattern',
+                patternType: 'solid',
+                fgColor: '#D9D2E9' // Ciruela claro
+            },
+            font: {
+                name: 'Calibri',
+                size: 7,
+                bold: true,
+                color: '#000000'
+            },
+            alignment: {
+                horizontal: 'center'
+            },
+            border: {
+                left: { style: 'thin', color: '#000000' },
+                right: { style: 'thin', color: '#000000' },
+                top: { style: 'thin', color: '#000000' },
+                bottom: { style: 'thin', color: '#000000' }
+            }
+        });
 
-    // Estilo para columnas específicas (Turquesa claro)
-    const turquoiseStyle = wb.createStyle({
-        fill: {
-            type: 'pattern',
-            patternType: 'solid',
-            fgColor: '#CCEEFF' // Turquesa claro
-        },
-        font: {
-            name: 'Calibri',
-            size: 8
-        },
-        border: {
-            left: { style: 'thin', color: '#000000' },
-            right: { style: 'thin', color: '#000000' },
-            top: { style: 'thin', color: '#000000' },
-            bottom: { style: 'thin', color: '#000000' }
-        }
-    });
+        // Estilo para columnas específicas (Turquesa claro)
+        const turquoiseStyle = wb.createStyle({
+            fill: {
+                type: 'pattern',
+                patternType: 'solid',
+                fgColor: '#CCEEFF' // Turquesa claro
+            },
+            font: {
+                name: 'Calibri',
+                size: 8
+            },
+            border: {
+                left: { style: 'thin', color: '#000000' },
+                right: { style: 'thin', color: '#000000' },
+                top: { style: 'thin', color: '#000000' },
+                bottom: { style: 'thin', color: '#000000' }
+            }
+        });
 
-    const normalBorderStyle = wb.createStyle({
-        font: {
-            name: 'Calibri',
-            size: 7
-        },
-        border: {
-            left: { style: 'thin', color: '#000000' },
-            right: { style: 'thin', color: '#000000' },
-            top: { style: 'thin', color: '#000000' },
-            bottom: { style: 'thin', color: '#000000' }
-        }
-    });
+        const normalBorderStyle = wb.createStyle({
+            font: {
+                name: 'Calibri',
+                size: 7
+            },
+            border: {
+                left: { style: 'thin', color: '#000000' },
+                right: { style: 'thin', color: '#000000' },
+                top: { style: 'thin', color: '#000000' },
+                bottom: { style: 'thin', color: '#000000' }
+            }
+        });
 
 
         // === Cabecera ===

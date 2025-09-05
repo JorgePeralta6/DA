@@ -2,23 +2,23 @@ import { response, request } from "express";
 import { hash } from "argon2";
 import User from "./user.model.js"
 
-export const saveUser = async (req,res) =>{
+export const saveUser = async (req, res) => {
     try {
- 
+
         const data = req.body;
- 
+
         const user = new User({
             ...data
         });
- 
+
         await user.save();
- 
+
         res.status(200).json({
             success: true,
             user
         })
- 
-    }catch(error){
+
+    } catch (error) {
         res.status(500).json({
             success: false,
             message: 'Error al guardar al niño',
@@ -26,14 +26,14 @@ export const saveUser = async (req,res) =>{
         })
     }
 }
- 
+
 
 export const getUsers = async (req = request, res = response) => {
     try {
 
-        const query = { status: true};
+        const query = { status: true };
 
-        const  users = await User.find(query)
+        const users = await User.find(query)
 
         res.status(200).json({
             success: true,
@@ -86,13 +86,13 @@ export const getDPI = async (req, res) => {
 export const updateUser = async (req, res = response) => {
     try {
         const { numero } = req.params; // Número viene por URL
-        const { _id, ...data } = req.body; 
+        const { _id, ...data } = req.body;
 
         // Buscar usuario por número
         const user = await User.findOneAndUpdate(
-            { numero },    
-            data,          
-            { new: true }  
+            { numero },
+            data,
+            { new: true }
         );
 
         // Si no se encuentra el usuario
