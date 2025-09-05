@@ -2,13 +2,20 @@ import Excel from 'excel4node';
 import User from "./user.model.js";
 import path from 'path';
 import fs from 'fs';
+import os from 'os'; // Para acceder al directorio home del usuario
 
 export const generarExcel = async (req, res) => {
-    const dirPath = path.resolve('src', 'reporteExcel');
-    if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath, { recursive: true });
+    // Obtener la ruta de la carpeta Descargas dependiendo del sistema operativo
+    const downloadsPath = path.join(os.homedir(), 'Downloads');
+    
+    // Crear la carpeta si no existe
+    if (!fs.existsSync(downloadsPath)) {
+        fs.mkdirSync(downloadsPath, { recursive: true });
     }
-    const filePath = path.join(dirPath, 'usuarios.xlsx');
+
+    // Crear un nombre único para cada archivo usando un timestamp
+    const timestamp = Date.now();
+    const filePath = path.join(downloadsPath, `usuarios_${timestamp}.xlsx`);
 
     try {
         const users = await User.find({ status: true });
@@ -18,7 +25,6 @@ export const generarExcel = async (req, res) => {
 
         // === Estilos ===
 
-        // Estilo para encabezado (Ciruela claro)
         // Estilo para encabezado (Ciruela claro)
         const headerStyle = wb.createStyle({
             fill: {
@@ -75,7 +81,6 @@ export const generarExcel = async (req, res) => {
             }
         });
 
-
         // === Cabecera ===
         const headers = ['No.', 'Nombre Encargado', 'Nombre Niño', 'DPI', 'Comunidad', 'Direccion', 'Correo', 'Telefono', 'Genero'];
         headers.forEach((header, i) => {
@@ -123,12 +128,13 @@ export const generarExcel = async (req, res) => {
             });
         });
 
+        // Guardar el archivo Excel en la carpeta Descargas
         wb.write(filePath, (err) => {
             if (err) {
                 return res.status(500).json({ success: false, msg: "Error al guardar el archivo Excel", error: err });
             }
 
-            res.json({ success: true, msg: "Archivo Excel actualizado correctamente", path: filePath });
+            res.json({ success: true, msg: "Archivo Excel generado correctamente", path: filePath });
         });
 
     } catch (error) {
