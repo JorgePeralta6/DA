@@ -37,7 +37,8 @@ router.put(
         check("numero", "El número es obligatorio").not().isEmpty(),
         check('telefono', 'El teléfono debe tener exactamente 8 dígitos').isLength({ min: 8, max: 8 }),
         check('DPI', 'El DPI debe tener exactamente 13 dígitos').isLength({ min: 13, max: 13 }),
-        validarCampos
+        validarCampos,
+        validarRepetido
     ],
     updateUser
 );
