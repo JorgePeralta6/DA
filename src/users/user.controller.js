@@ -56,7 +56,7 @@ export const getDPI = async (req, res) => {
         const users = await User.find({
             $or: [
                 { DPI: search },
-                { nombreE: { $regex: search, $options: 'i' } }, // búsqueda insensible a mayúsculas
+                { nombreE: { $regex: search, $options: 'i' } },
                 { nombreN: { $regex: search, $options: 'i' } }
             ]
         });
