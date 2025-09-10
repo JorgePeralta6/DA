@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { check } from "express-validator";
 import { saveUser, getUsers, getDPI, updateUser, deleteUser } from "./user.controller.js"
-import { existeUsuarioById, existeDPI } from "../helpers/db-validator.js"
+import { validarJWT } from "../middlewares/validar-jwt.js"
 import { validarCampos } from "../middlewares/validar-campos.js";
 import { validarRepetido } from "../middlewares/validar-repetido.js"
 import { generarExcel } from "./user.excel.js";
@@ -19,12 +19,16 @@ router.post(
         check('telefono', 'El teléfono debe tener exactamente 8 dígitos').isLength({ min: 8, max: 8 }),
         check('email', 'El correo electrónico no es válido').isEmail(),
         validarCampos,
-        validarRepetido
+        validarRepetido,
+        validarJWT
     ],
     saveUser
 )
 
-router.get("/", getUsers);
+router.get(
+    "/",
+    validarJWT, 
+    getUsers);
 
 router.get(
     '/buscar/:search',

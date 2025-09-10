@@ -29,6 +29,11 @@ const AuthSchema = Schema(
             maxLength: 8,
             required: true,
         },
+        role: {
+            type: String,
+            enum: ["ADMIN_ROLE", "EMPLOYEE_ROLE"],
+            default: "EMPLOYEE_ROLE"
+        },
         status: {
             type: Boolean,
             default: true,

@@ -45,6 +45,11 @@ const UserSchema = Schema({
         type: String,
         required: [true, "Campo vacío"],
     },
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'Auth', // referencia al modelo de autenticación
+        required: true
+    },
     status: {
         type: Boolean,
         default: true,

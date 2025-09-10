@@ -4,11 +4,21 @@ import User from "./user.model.js"
 
 export const saveUser = async (req, res) => {
     try {
-
         const data = req.body;
 
+        // Asegurarse de que haya usuario autenticado
+        const authUser = req.user;
+        if (!authUser) {
+            return res.status(401).json({
+                success: false,
+                message: "No autenticado"
+            });
+        }
+
+        // Agregar el campo createdBy
         const user = new User({
-            ...data
+            ...data,
+            createdBy: authUser._id
         });
 
         await user.save();
@@ -16,38 +26,54 @@ export const saveUser = async (req, res) => {
         res.status(200).json({
             success: true,
             user
-        })
+        });
 
     } catch (error) {
         res.status(500).json({
             success: false,
             message: 'Error al guardar al niño',
             error: error.message || error,
-        })
+        });
     }
 }
 
 
-export const getUsers = async (req = request, res = response) => {
+
+export const getUsers = async (req, res = response) => {
     try {
+        console.log("req.user:", req.user); // 👈 Verifica si el usuario está presente
 
-        const query = { status: true };
+        const authUser = req.user;
 
-        const users = await User.find(query)
+        if (!authUser) {
+            return res.status(401).json({
+                success: false,
+                message: "No autenticado"
+            });
+        }
+
+        let query = { status: true };
+
+        if (authUser.role !== "ADMIN_ROLE") {
+            query.createdBy = authUser._id;
+        }
+
+        const users = await User.find(query).sort({ numero: 1 });
 
         res.status(200).json({
             success: true,
             users
-        })
+        });
 
     } catch (error) {
         res.status(500).json({
             success: false,
             msg: "Error al obtener usuarios",
             error
-        })
+        });
     }
 }
+
 
 export const getDPI = async (req, res) => {
     try {
