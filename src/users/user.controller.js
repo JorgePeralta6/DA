@@ -41,7 +41,6 @@ export const saveUser = async (req, res) => {
 
 export const getUsers = async (req, res = response) => {
     try {
-        console.log("req.user:", req.user); // 👈 Verifica si el usuario está presente
 
         const authUser = req.user;
 
@@ -78,14 +77,31 @@ export const getUsers = async (req, res = response) => {
 export const getDPI = async (req, res) => {
     try {
         const { search } = req.params;
+        const authUser = req.user;
 
-        const users = await User.find({
+        if (!authUser) {
+            return res.status(401).json({
+                success: false,
+                message: "No autenticado"
+            });
+        }
+
+        // Búsqueda base
+        const searchQuery = {
             $or: [
-                { DPI: search },
+                { DPI: { $regex: search, $options: 'i' } }, // Mejora para DPI
                 { nombreE: { $regex: search, $options: 'i' } },
                 { nombreN: { $regex: search, $options: 'i' } }
             ]
-        });
+        };
+
+
+        // Si NO es administrador, filtra también por "createdBy"
+        if (authUser.role !== "ADMIN_ROLE") {
+            searchQuery.createdBy = authUser._id;
+        }
+
+        const users = await User.find(searchQuery);
 
         if (!users || users.length === 0) {
             return res.status(404).json({
@@ -106,7 +122,8 @@ export const getDPI = async (req, res) => {
             error
         });
     }
-}
+};
+
 
 
 export const updateUser = async (req, res = response) => {

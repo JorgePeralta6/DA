@@ -32,6 +32,7 @@ router.get(
 
 router.get(
     '/buscar/:search',
+    validarJWT,
     getDPI
 );
 
