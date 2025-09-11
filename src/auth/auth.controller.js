@@ -84,3 +84,69 @@ export const register = async (req, res) => {
         })
     }
 }
+
+
+// Obtener todos los empleados (solo admin)
+export const getAllEmployees = async (req, res) => {
+  try {
+    const employees = await Auth.find({ role: "EMPLOYEE_ROLE" }, "-password"); // excluye contraseña
+    return res.status(200).json({ employees });
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Error al obtener empleados",
+      error: error.message,
+    });
+  }
+};
+
+// Actualizar datos de un empleado (solo admin)
+export const updateEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nombre, apellido, email, phone, role } = req.body;
+
+    const updated = await Auth.findByIdAndUpdate(
+      id,
+      { nombre, apellido, email, phone, role },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updated) {
+      return res.status(404).json({ msg: "Empleado no encontrado" });
+    }
+
+    return res.status(200).json({ msg: "Empleado actualizado", updated });
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Error al actualizar empleado",
+      error: error.message,
+    });
+  }
+};
+
+// Actualizar contraseña de empleado (solo admin)
+export const updateEmployeePassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    const encryptedPassword = await hash(password);
+
+    const updated = await Auth.findByIdAndUpdate(
+      id,
+      { password: encryptedPassword },
+      { new: true }
+    ).select("-password");
+
+    if (!updated) {
+      return res.status(404).json({ msg: "Empleado no encontrado" });
+    }
+
+    return res.status(200).json({ msg: "Contraseña actualizada" });
+  } catch (error) {
+    return res.status(500).json({
+      msg: "Error al actualizar contraseña",
+      error: error.message,
+    });
+  }
+};
