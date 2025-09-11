@@ -38,7 +38,8 @@ export const login = async (req, res) => {
             authDetails: {
                 username: auth.username,
                 token: token,
-                profilePicture: auth.profilePicture
+                profilePicture: auth.profilePicture,
+                role: auth.role
             }
         })
 

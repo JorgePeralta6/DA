@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, register } from './auth.controller.js'
+import { login, register, getAllEmployees, updateEmployee, updateEmployeePassword } from './auth.controller.js'
 import { loginValidator } from '../middlewares/validator.js';
 import { deleteFileOnError } from '../middlewares/deleteFileOnError.js';
 
@@ -17,5 +17,11 @@ router.post(
     deleteFileOnError,
     register
 );
+
+router.get('/', getAllEmployees);
+
+router.put('/employees/:id', updateEmployee);
+
+router.put('/employees/:id/password', updateEmployeePassword);
 
 export default router;
