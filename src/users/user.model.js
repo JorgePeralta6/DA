@@ -31,7 +31,7 @@ const UserSchema = Schema({
         type: String,
     },
     telefono: {
-        type: Number,
+        type: String,
         minLength: 8,
         maxLength: 8,
         required: true,
