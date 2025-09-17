@@ -21,6 +21,7 @@ const AuthSchema = Schema(
         },
         password: {
             type: String,
+            minLength: 8,
             required: [true, "La contraseña es requerida"]
         },
         phone: {
