@@ -13,12 +13,20 @@ import { createRoles } from '../src/role/role.controller.js'
 
 const middlewares = (app) => {
     app.use(express.urlencoded({ extended: false }));
-    app.use(cors());
     app.use(express.json());
     app.use(helmet());
     app.use(morgan('dev'));
     app.use(limiter);
-}
+
+    const corsOptions = {
+        origin: 'https://da-front-sandy.vercel.app', 
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'x-token'] // incluye headers personalizados
+    };
+
+    app.use(cors(corsOptions));
+};
+
 
 const routes = (app) => {
     app.use("/dmmsystem/v1/users", userRoutes);
