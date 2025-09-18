@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, register, getAllEmployees, updateEmployee, updateEmployeePassword } from './auth.controller.js'
+import { login, register, getAllEmployees, updateEmployee, updateEmployeePassword, deleteEmploye } from './auth.controller.js'
 import { loginValidator } from '../middlewares/validator.js';
 import { deleteFileOnError } from '../middlewares/deleteFileOnError.js';
 
@@ -23,5 +23,10 @@ router.get('/', getAllEmployees);
 router.put('/employees/:id', updateEmployee);
 
 router.put('/employees/:id/password', updateEmployeePassword);
+
+router.delete(
+    "/:id",
+    deleteEmploye
+)
 
 export default router;

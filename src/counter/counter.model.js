@@ -11,14 +11,14 @@ const Counter = model('Counter', CounterSchema);
 
 
 // Función para obtener el siguiente valor de la secuencia
-const getNextSequenceValue = async (sequenceName) => {
-    const lastUser = await User.findOne({ status: true })
-        .sort({ numero: -1 })
-        .select('numero');
-
-    let maxNumero = lastUser ? parseInt(lastUser.numero) : 0;
+const getNextSequenceValue = async () => {
+    const maxUser = await User.findOne().sort({ numero: -1 }).select('numero');
+    const maxNumero = maxUser ? maxUser.numero : 0;
     return maxNumero + 1;
 };
+
+
+
 
 
 export { getNextSequenceValue };

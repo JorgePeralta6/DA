@@ -151,3 +151,26 @@ export const updateEmployeePassword = async (req, res) => {
     });
   }
 };
+
+export const deleteEmploye = async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+        
+        const user = await Auth.findOneAndDelete(id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Empleado eliminado exitosamente'
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al eliminar empleado',
+            error
+        })
+    }
+
+}

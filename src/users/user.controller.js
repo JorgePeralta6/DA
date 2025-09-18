@@ -1,23 +1,22 @@
 import { response, request } from "express";
 import { hash } from "argon2";
 import User from "./user.model.js"
+import { getNextSequenceValue } from "../counter/counter.model.js";
 
 export const saveUser = async (req, res) => {
     try {
         const data = req.body;
 
-        // Asegurarse de que haya usuario autenticado
         const authUser = req.user;
         if (!authUser) {
-            return res.status(401).json({
-                success: false,
-                message: "No autenticado"
-            });
+            return res.status(401).json({ success: false, message: "No autenticado" });
         }
 
-        // Agregar el campo createdBy
+        const numero = await getNextSequenceValue();
+
         const user = new User({
             ...data,
+            numero,
             createdBy: authUser._id
         });
 
@@ -35,13 +34,10 @@ export const saveUser = async (req, res) => {
             error: error.message || error,
         });
     }
-}
-
-
+};
 
 export const getUsers = async (req, res = response) => {
     try {
-
         const authUser = req.user;
 
         if (!authUser) {
@@ -51,11 +47,7 @@ export const getUsers = async (req, res = response) => {
             });
         }
 
-        let query = { status: true };
-
-        if (authUser.role !== "ADMIN_ROLE") {
-            query.createdBy = authUser._id;
-        }
+        const query = { status: true };
 
         const users = await User.find(query).sort({ numero: 1 });
 
@@ -72,7 +64,6 @@ export const getUsers = async (req, res = response) => {
         });
     }
 }
-
 
 export const getDPI = async (req, res) => {
     try {
@@ -167,8 +158,8 @@ export const deleteUser = async (req, res) => {
     try {
         const { numero } = req.params;
 
-        // Eliminar completamente el usuario
-        const user = await User.findOneAndDelete({ numero });
+        // Eliminar usuario por número (asegurar tipo Number)
+        const user = await User.findOneAndDelete({ numero: Number(numero) });
 
         if (!user) {
             return res.status(404).json({
@@ -177,27 +168,30 @@ export const deleteUser = async (req, res) => {
             });
         }
 
-        // Convertimos numero a entero para la comparación en reordenamiento
-        const numeroEliminado = parseInt(numero, 10);
+        const numeroEliminado = Number(numero);
 
-        // Reordenar: disminuir en 1 todos los números mayores al eliminado
-        const usuariosRestantes = await User.find({});
+        // Reordenar números de usuarios con numero > eliminado
+        const usuariosRestantes = await User.find({ numero: { $gt: numeroEliminado } });
 
         for (const u of usuariosRestantes) {
-            const n = parseInt(u.numero, 10);
-            if (n > numeroEliminado) {
-                u.numero = (n - 1).toString(); // lo dejamos como string
-                await u.save();
-            }
+            u.numero = u.numero - 1; // mantener número como Number
+            await u.save();
         }
 
-        const authenticatedUser = req.user;
+        // Actualizar contador al nuevo máximo
+        const maxUser = await User.findOne().sort({ numero: -1 }).select('numero');
+        const maxNumero = maxUser ? maxUser.numero : 0;
+
+        await Counter.findByIdAndUpdate(
+            'user',
+            { seq: maxNumero },
+            { new: true, upsert: true }
+        );
 
         res.status(200).json({
             success: true,
-            msg: 'Usuario eliminado y reordenado correctamente',
-            user,
-            authenticatedUser
+            msg: 'Usuario eliminado y números reordenados correctamente',
+            user
         });
 
     } catch (error) {

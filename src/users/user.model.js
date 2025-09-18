@@ -3,7 +3,9 @@ import { getNextSequenceValue } from "../counter/counter.model.js";
 
 const UserSchema = Schema({
     numero: {
-        type: String
+        type: Number,
+        required: true,
+        unique: true
     },
     nombreE: {
         type: String,
@@ -43,7 +45,6 @@ const UserSchema = Schema({
     },
     notas: {
         type: String,
-        required: [true, "Campo vacío"],
     },
     createdBy: {
         type: Schema.Types.ObjectId,
