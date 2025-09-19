@@ -126,6 +126,8 @@ export const generarExcel = async (req, res) => {
             if (err) {
                 return res.status(500).json({ success: false, msg: "Error al guardar el archivo Excel", error: err });
             }
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=usuarios_${timestamp}.xlsx`);
 
             // Enviar el archivo como descarga al navegador del cliente
             res.download(filePath, `usuarios_${timestamp}.xlsx`, (downloadErr) => {
