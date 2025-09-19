@@ -2,18 +2,16 @@ import Excel from 'excel4node';
 import User from "./user.model.js";
 import path from 'path';
 import fs from 'fs';
-import os from 'os'; // Para acceder al directorio home del usuario
+import os from 'os';
 
 export const generarExcel = async (req, res) => {
-    // Obtener la ruta de la carpeta Descargas dependiendo del sistema operativo
     const downloadsPath = path.join(os.homedir(), 'Downloads');
-    
-    // Crear la carpeta si no existe
+
+    // Crear carpeta Downloads si no existe (en servidores puede no ser necesario)
     if (!fs.existsSync(downloadsPath)) {
         fs.mkdirSync(downloadsPath, { recursive: true });
     }
 
-    // Crear un nombre único para cada archivo usando un timestamp
     const timestamp = Date.now();
     const filePath = path.join(downloadsPath, `usuarios_${timestamp}.xlsx`);
 
@@ -25,12 +23,11 @@ export const generarExcel = async (req, res) => {
 
         // === Estilos ===
 
-        // Estilo para encabezado (Ciruela claro)
         const headerStyle = wb.createStyle({
             fill: {
                 type: 'pattern',
                 patternType: 'solid',
-                fgColor: '#D9D2E9' // Ciruela claro
+                fgColor: '#D9D2E9'
             },
             font: {
                 name: 'Calibri',
@@ -49,12 +46,11 @@ export const generarExcel = async (req, res) => {
             }
         });
 
-        // Estilo para columnas específicas (Turquesa claro)
         const turquoiseStyle = wb.createStyle({
             fill: {
                 type: 'pattern',
                 patternType: 'solid',
-                fgColor: '#CCEEFF' // Turquesa claro
+                fgColor: '#CCEEFF'
             },
             font: {
                 name: 'Calibri',
@@ -81,22 +77,19 @@ export const generarExcel = async (req, res) => {
             }
         });
 
-        // === Cabecera ===
+        // === Encabezados ===
         const headers = ['No.', 'Nombre Encargado', 'Nombre Niño', 'DPI', 'Comunidad', 'Direccion', 'Correo', 'Telefono', 'Genero'];
         headers.forEach((header, i) => {
             ws.cell(1, i + 1).string(header).style(headerStyle);
         });
 
-        // Ajustar ancho de columnas
         const widths = [3, 20, 20, 10, 18, 26, 18, 6, 7];
         widths.forEach((w, i) => ws.column(i + 1).setWidth(w));
 
         // === Cuerpo de la tabla ===
         users.forEach((user, index) => {
             const row = index + 2;
-
-            // Estilo condicional por columna (turquesa o no)
-            const turquoiseColumns = [0, 2, 4, 6, 8]; // Índices: No., Nombre Niño, Comunidad, Correo, Genero
+            const turquoiseColumns = [0, 2, 4, 6, 8];
 
             const data = [
                 user.numero,
@@ -119,7 +112,7 @@ export const generarExcel = async (req, res) => {
                     cell.string(value || '');
                 }
 
-                // Aplicar estilo turquesa si es columna designada
+                // Estilo condicional
                 if (turquoiseColumns.includes(colIndex)) {
                     cell.style(turquoiseStyle);
                 } else {
@@ -128,13 +121,24 @@ export const generarExcel = async (req, res) => {
             });
         });
 
-        // Guardar el archivo Excel en la carpeta Descargas
+        // === Guardar y enviar el archivo al cliente ===
         wb.write(filePath, (err) => {
             if (err) {
                 return res.status(500).json({ success: false, msg: "Error al guardar el archivo Excel", error: err });
             }
 
-            res.json({ success: true, msg: "Archivo Excel generado correctamente", path: filePath });
+            // Enviar el archivo como descarga al navegador del cliente
+            res.download(filePath, `usuarios_${timestamp}.xlsx`, (downloadErr) => {
+                if (downloadErr) {
+                    console.error("Error al enviar el archivo:", downloadErr);
+                    return res.status(500).json({ success: false, msg: "Error al enviar el archivo" });
+                }
+
+                // Eliminar archivo después de enviarlo
+                fs.unlink(filePath, (unlinkErr) => {
+                    if (unlinkErr) console.error("Error al eliminar archivo:", unlinkErr);
+                });
+            });
         });
 
     } catch (error) {
