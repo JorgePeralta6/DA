@@ -77,71 +77,34 @@ export const generarExcel = async (req, res) => {
             }
         });
 
-        // === Encabezados ===
-        const headers = ['No.', 'Nombre Encargado', 'Nombre Niño', 'DPI', 'Comunidad', 'Direccion', 'Correo', 'Telefono', 'Genero'];
-        headers.forEach((header, i) => {
-            ws.cell(1, i + 1).string(header).style(headerStyle);
-        });
-
-        const widths = [3, 20, 20, 10, 18, 26, 18, 6, 7];
-        widths.forEach((w, i) => ws.column(i + 1).setWidth(w));
-
-        // === Cuerpo de la tabla ===
-        users.forEach((user, index) => {
-            const row = index + 2;
-            const turquoiseColumns = [0, 2, 4, 6, 8];
-
-            const data = [
-                user.numero,
-                user.nombreE,
-                user.nombreN,
-                user.DPI,
-                user.comunidad,
-                user.direccion,
-                user.email,
-                user.telefono,
-                user.genero
-            ];
-
-            data.forEach((value, colIndex) => {
-                const cell = ws.cell(row, colIndex + 1);
-
-                if (typeof value === 'number') {
-                    cell.number(value);
-                } else {
-                    cell.string(value || '');
-                }
-
-                // Estilo condicional
-                if (turquoiseColumns.includes(colIndex)) {
-                    cell.style(turquoiseStyle);
-                } else {
-                    cell.style(normalBorderStyle);
-                }
-            });
-        });
-
         // === Guardar y enviar el archivo al cliente ===
-        wb.write(filePath, (err) => {
+        wb.write(filePath, async (err) => {
             if (err) {
                 return res.status(500).json({ success: false, msg: "Error al guardar el archivo Excel", error: err });
             }
+
+            if (!fs.existsSync(filePath)) {
+                return res.status(404).json({ success: false, msg: 'Archivo no encontrado' });
+            }
+
+            // Establece los headers adecuados
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             res.setHeader('Content-Disposition', `attachment; filename=usuarios_${timestamp}.xlsx`);
 
-            // Enviar el archivo como descarga al navegador del cliente
+            // Envía el archivo como descarga
             res.download(filePath, `usuarios_${timestamp}.xlsx`, (downloadErr) => {
                 if (downloadErr) {
                     console.error("Error al enviar el archivo:", downloadErr);
                     return res.status(500).json({ success: false, msg: "Error al enviar el archivo" });
                 }
 
-                // Eliminar archivo después de enviarlo
+                // Elimina el archivo después de enviarlo
                 fs.unlink(filePath, (unlinkErr) => {
                     if (unlinkErr) console.error("Error al eliminar archivo:", unlinkErr);
                 });
             });
         });
+
 
     } catch (error) {
         return res.status(500).json({ success: false, msg: "Error al generar el archivo Excel", error: error.message });
