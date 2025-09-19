@@ -77,20 +77,13 @@ export const getDPI = async (req, res) => {
             });
         }
 
-        // Búsqueda base
         const searchQuery = {
             $or: [
-                { DPI: { $regex: search, $options: 'i' } }, // Mejora para DPI
+                { DPI: { $regex: search, $options: 'i' } },
                 { nombreE: { $regex: search, $options: 'i' } },
                 { nombreN: { $regex: search, $options: 'i' } }
             ]
         };
-
-
-        // Si NO es administrador, filtra también por "createdBy"
-        if (authUser.role !== "ADMIN_ROLE") {
-            searchQuery.createdBy = authUser._id;
-        }
 
         const users = await User.find(searchQuery);
 
@@ -114,6 +107,7 @@ export const getDPI = async (req, res) => {
         });
     }
 };
+
 
 
 
